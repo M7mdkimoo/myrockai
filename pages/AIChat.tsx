@@ -244,13 +244,13 @@ const AIChat: React.FC = () => {
       )}
 
       {/* Sidebar */}
-      <div className={`fixed md:relative w-72 h-full flex flex-col border-r border-gray-200/50 dark:border-white/5 bg-white/60 dark:bg-black/40 backdrop-blur-xl z-40 transition-transform duration-300 ${mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
+      <div className={`relative sm:fixed w-72 h-full flex flex-col border-r border-gray-200/50 dark:border-white/5 bg-white/60 dark:bg-black/40 backdrop-blur-xl z-40 transition-transform duration-300 ${mobileSidebarOpen ? 'translate-x-0' : 'sm:-translate-x-full'}`}>
         <div className="p-6 border-b border-gray-200/50 dark:border-white/5 flex justify-between items-center">
            <div className="flex items-center gap-2 font-bold text-gray-900 dark:text-white text-lg">
               <Cpu className="text-primary" size={20} /> 
               Models
            </div>
-           <button onClick={() => setMobileSidebarOpen(false)} className="md:hidden p-1 text-gray-500"><X size={20}/></button>
+           <button onClick={() => setMobileSidebarOpen(false)} className="sm:hidden p-1 text-gray-500"><X size={20}/></button>
         </div>
         <div className="flex-1 overflow-y-auto p-3 space-y-1 custom-scrollbar">
           {Object.values(ServiceCategory).map((cat) => (
@@ -283,7 +283,7 @@ const AIChat: React.FC = () => {
         {/* Chat Header */}
         <div className="h-16 border-b border-gray-200/50 dark:border-white/5 bg-white/40 dark:bg-black/40 backdrop-blur-md flex items-center justify-between px-4 md:px-6 shadow-sm">
           <div className="flex items-center gap-4">
-            <button onClick={() => setMobileSidebarOpen(true)} className="md:hidden p-2 text-gray-600 dark:text-gray-300 bg-white/50 dark:bg-white/10 rounded-lg border border-gray-200 dark:border-white/10">
+            <button onClick={() => setMobileSidebarOpen(true)} className="hidden sm:block p-2 text-gray-600 dark:text-gray-300 bg-white/50 dark:bg-white/10 rounded-lg border border-gray-200 dark:border-white/10">
                <Menu size={18} />
             </button>
 
