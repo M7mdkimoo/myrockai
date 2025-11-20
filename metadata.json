@@ -1,0 +1,7 @@
+{
+  "name": "MyRockAI",
+  "description": "A modern AI-powered platform connecting users with specialized AI models and human experts ('Rocks') for complex tasks.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
