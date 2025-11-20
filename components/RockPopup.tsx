@@ -18,7 +18,8 @@ const RockPopup: React.FC<RockPopupProps> = ({ isOpen, onClose, category }) => {
   const [showRating, setShowRating] = useState(false);
   const [rating, setRating] = useState(0);
   const [isMatching, setIsMatching] = useState(true); // New state for matching phase
-  
+  const [isReviewing, setIsReviewing] = useState(false); // New state for review phase
+
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Determine Rate based on Category
@@ -37,28 +38,33 @@ const RockPopup: React.FC<RockPopupProps> = ({ isOpen, onClose, category }) => {
 
   useEffect(() => {
     if (isOpen && isMatching) {
-      // Show matching screen for 3 seconds, then start session
+      // Show matching screen for 3 seconds, then start review phase
       const timer = setTimeout(() => {
         setIsMatching(false);
-        setIsSessionActive(true);
+        setIsReviewing(true);
+        // After 1 minute of reviewing, start session
+        setTimeout(() => {
+          setIsReviewing(false);
+          setIsSessionActive(true);
+        }, 60000); // 60 seconds
       }, 3000);
       return () => clearTimeout(timer);
     }
   }, [isOpen, isMatching]);
 
   useEffect(() => {
-    if (isOpen && !isMatching && rockMessages.length === 0) {
-      // Initial greeting from Rock after matching
+    if (isOpen && !isMatching && !isReviewing && rockMessages.length === 0) {
+      // Initial greeting from Rock after reviewing
       setRockMessages([
         {
           id: 'init-rock',
           role: 'rock',
-          text: `Hi! I'm a rock in ${category}. My rate is $${hourlyRate}/hr. I can see your AI chat history. How can I help?`,
+          text: `Hey there! I'm your dedicated Rock expert in ${category}. I've reviewed your AI conversation and I'm ready to bring my specialized skills to help you achieve your goals. What would you like me to work on?`,
           timestamp: Date.now()
         }
       ]);
     }
-  }, [isOpen, isMatching, category, rockMessages.length, hourlyRate]);
+  }, [isOpen, isMatching, isReviewing, category, rockMessages.length]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -105,6 +111,7 @@ const RockPopup: React.FC<RockPopupProps> = ({ isOpen, onClose, category }) => {
       setSessionTime(0);
       setIsSessionActive(false);
       setIsMatching(true);
+      setIsReviewing(false);
       setRockMessages([]);
     }, 1500);
   };
@@ -184,6 +191,26 @@ const RockPopup: React.FC<RockPopupProps> = ({ isOpen, onClose, category }) => {
                 <p className="text-gray-600 dark:text-gray-400 mb-6">
                   Looking for the best rock to assist you...<br/>
                   Searching and suggesting the perfect match.
+                </p>
+                <div className="flex justify-center space-x-2">
+                  <div className="w-3 h-3 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                  <div className="w-3 h-3 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                  <div className="w-3 h-3 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                </div>
+              </div>
+            </div>
+          ) : isReviewing ? (
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-white dark:bg-gray-900 z-10 p-8 animate-fade-in-up">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center mb-6 animate-pulse">
+                  <div className="w-8 h-8 bg-white rounded-full animate-spin"></div>
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                  Rock is Reviewing Your Chat
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-6">
+                  Analyzing your AI conversation history...<br/>
+                  Preparing personalized insights and recommendations.
                 </p>
                 <div className="flex justify-center space-x-2">
                   <div className="w-3 h-3 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
