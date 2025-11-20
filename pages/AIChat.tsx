@@ -91,7 +91,10 @@ const AIChat: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // Only scroll to bottom if there are messages or active streaming/loading
+    if (activeChatMessages.length > 0 || currentStreamText || isLoading) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
   }, [activeChatMessages, currentStreamText, isLoading]);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
