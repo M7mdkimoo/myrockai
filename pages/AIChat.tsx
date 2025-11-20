@@ -230,7 +230,7 @@ const AIChat: React.FC = () => {
   };
 
   return (
-    <div className="flex h-[calc(100vh-64px)] relative overflow-hidden">
+    <div className="flex min-h-[calc(100vh-64px)] relative">
       <AnimatedBackground />
       
       {/* Dynamic Chat Background Blob */}
@@ -466,7 +466,7 @@ const AIChat: React.FC = () => {
         </div>
 
         {/* Input Area */}
-        <div className="p-4 bg-white/80 dark:bg-[#050505]/80 backdrop-blur-lg border-t border-gray-200/50 dark:border-white/5 z-20">
+        <div className="sticky bottom-0 p-4 bg-white/80 dark:bg-[#050505]/80 backdrop-blur-lg border-t border-gray-200/50 dark:border-white/5 z-20">
           
           {/* Attachment Preview Area */}
           {attachments.length > 0 && (
