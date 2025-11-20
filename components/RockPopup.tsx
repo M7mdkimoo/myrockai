@@ -14,9 +14,10 @@ const RockPopup: React.FC<RockPopupProps> = ({ isOpen, onClose, category }) => {
   const [rockMessages, setRockMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [sessionTime, setSessionTime] = useState(0); // Seconds
-  const [isSessionActive, setIsSessionActive] = useState(true);
+  const [isSessionActive, setIsSessionActive] = useState(false); // Start false, activate after matching
   const [showRating, setShowRating] = useState(false);
   const [rating, setRating] = useState(0);
+  const [isMatching, setIsMatching] = useState(true); // New state for matching phase
   
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -35,18 +36,29 @@ const RockPopup: React.FC<RockPopupProps> = ({ isOpen, onClose, category }) => {
   }, [isOpen, isSessionActive, showRating]);
 
   useEffect(() => {
-    if (isOpen && rockMessages.length === 0) {
-      // Initial greeting from Rock
+    if (isOpen && isMatching) {
+      // Show matching screen for 3 seconds, then start session
+      const timer = setTimeout(() => {
+        setIsMatching(false);
+        setIsSessionActive(true);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, isMatching]);
+
+  useEffect(() => {
+    if (isOpen && !isMatching && rockMessages.length === 0) {
+      // Initial greeting from Rock after matching
       setRockMessages([
         {
           id: 'init-rock',
           role: 'rock',
-          text: `Hi! I'm a senior expert in ${category}. My rate is $${hourlyRate}/hr. I can see your AI chat history. How can I help?`,
+          text: `Hi! I'm a rock in ${category}. My rate is $${hourlyRate}/hr. I can see your AI chat history. How can I help?`,
           timestamp: Date.now()
         }
       ]);
     }
-  }, [isOpen, category, rockMessages.length, hourlyRate]);
+  }, [isOpen, isMatching, category, rockMessages.length, hourlyRate]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -91,7 +103,8 @@ const RockPopup: React.FC<RockPopupProps> = ({ isOpen, onClose, category }) => {
       // Reset local state for next time
       setShowRating(false);
       setSessionTime(0);
-      setIsSessionActive(true);
+      setIsSessionActive(false);
+      setIsMatching(true);
       setRockMessages([]);
     }, 1500);
   };
@@ -126,7 +139,7 @@ const RockPopup: React.FC<RockPopupProps> = ({ isOpen, onClose, category }) => {
             </div>
             <div>
               <h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                Expert Rock
+                Rock
                 <span className="px-2 py-0.5 rounded-full bg-white/50 dark:bg-black/20 text-[10px] border border-gray-200 dark:border-gray-700">
                   ${hourlyRate}/hr
                 </span>
@@ -158,8 +171,28 @@ const RockPopup: React.FC<RockPopupProps> = ({ isOpen, onClose, category }) => {
 
         {/* Main Content Area */}
         <div className="flex-1 overflow-hidden flex flex-col relative">
-          
-          {showRating ? (
+
+          {isMatching ? (
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-white dark:bg-gray-900 z-10 p-8 animate-fade-in-up">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center mb-6 animate-pulse">
+                  <div className="w-8 h-8 bg-white rounded-full animate-ping"></div>
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                  Matching with a Rock
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-6">
+                  Looking for the best rock to assist you...<br/>
+                  Searching and suggesting the perfect match.
+                </p>
+                <div className="flex justify-center space-x-2">
+                  <div className="w-3 h-3 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                  <div className="w-3 h-3 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                  <div className="w-3 h-3 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                </div>
+              </div>
+            </div>
+          ) : showRating ? (
             <div className="absolute inset-0 flex flex-col items-center justify-center bg-white dark:bg-gray-900 z-10 p-8 animate-fade-in-up">
               <div className="w-full max-w-sm bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 mb-8">
                 <h3 className="text-xl font-bold mb-4 flex items-center gap-2 border-b border-gray-200 dark:border-gray-700 pb-2">
@@ -191,7 +224,7 @@ const RockPopup: React.FC<RockPopupProps> = ({ isOpen, onClose, category }) => {
                 </div>
               </div>
 
-              <p className="mb-4 font-medium text-gray-600 dark:text-gray-300">How was your Expert?</p>
+              <p className="mb-4 font-medium text-gray-600 dark:text-gray-300">How was your Rock?</p>
               <div className="flex gap-3 mb-6">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
@@ -250,7 +283,7 @@ const RockPopup: React.FC<RockPopupProps> = ({ isOpen, onClose, category }) => {
                       onChange={e => setInput(e.target.value)}
                       onKeyDown={e => e.key === 'Enter' && handleSend()}
                       className="flex-1 bg-gray-100 dark:bg-gray-800 border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/50 outline-none text-gray-900 dark:text-white"
-                      placeholder="Message Expert Rock..."
+                      placeholder="Message Rock..."
                    />
                    <button onClick={handleSend} className="p-3 bg-primary text-white rounded-xl hover:scale-105 transition-transform">
                       <Send size={20} />

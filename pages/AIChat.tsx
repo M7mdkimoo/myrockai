@@ -306,7 +306,7 @@ const AIChat: React.FC = () => {
             )}
           </div>
           
-          <button 
+          <button
             onClick={() => setShowRockPopup(true)}
             className="bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 text-white dark:text-black px-4 md:px-5 py-2 rounded-full text-xs md:text-sm font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center gap-2"
           >
@@ -314,7 +314,7 @@ const AIChat: React.FC = () => {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
             </span>
-            Hire Expert
+            Request a Rock
           </button>
         </div>
 
